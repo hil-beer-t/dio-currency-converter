@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "api-key",
+      "type": "java.lang.String",
+      "description": "freecurrencyapi.net api-key.",
+      "value": "fbb25e60-94e3-11ec-9240-fd3e2e3e7d50"
+  }
+] }

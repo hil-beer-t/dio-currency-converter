@@ -22,6 +22,7 @@ public class CurrencyDTO {
     public String pctChange;
     public String bid;
     public String ask;
+    public Double askDouble;
     public String timestamp;
     public String createDate;
 }

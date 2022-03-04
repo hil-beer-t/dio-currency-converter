@@ -1,9 +1,19 @@
 package com.currencyconverter.api.controllers;
 
 import com.currencyconverter.api.models.Client;
+import com.currencyconverter.api.services.ClientCounterService;
 import com.currencyconverter.api.services.ClientService;
+import com.currencyconverter.api.services.ConversionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
+
+/**
+ * Implementação de um <b>Observer</b> simples {@link ConversionService},
+ * incrementa o número de clientes no banco sempre que é criado um novo cliente.
+ * @author hilbert
+ */
 
 @RestController
 @RequestMapping("clients")
@@ -11,8 +21,11 @@ public class ClientController {
 
     private final ClientService clientService;
 
-    public ClientController(ClientService clientService) {
+    private final ClientCounterService clientCounterService;
+
+    public ClientController(ClientService clientService, ClientCounterService clientCounterService) {
         this.clientService = clientService;
+        this.clientCounterService = clientCounterService;
     }
 
     @GetMapping

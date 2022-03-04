@@ -4,6 +4,7 @@ import com.currencyconverter.api.models.Address;
 import com.currencyconverter.api.models.Client;
 import com.currencyconverter.api.repository.AddressRepository;
 import com.currencyconverter.api.repository.ClientRepository;
+import com.currencyconverter.api.services.ClientCounterService;
 import com.currencyconverter.api.services.ClientService;
 import com.currencyconverter.api.services.ViaCepService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,14 +34,17 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
 
+    private final ClientCounterService clientCounterService;
+
     private final AddressRepository addressRepository;
 
     private final ViaCepService viaCepService;
 
     public ClientServiceImpl(ClientRepository clientRepository,
-                             AddressRepository addressRepository,
+                             ClientCounterService clientCounterService, AddressRepository addressRepository,
                              ViaCepService viaCepService) {
         this.clientRepository = clientRepository;
+        this.clientCounterService = clientCounterService;
         this.addressRepository = addressRepository;
         this.viaCepService = viaCepService;
     }
@@ -62,10 +66,11 @@ public class ClientServiceImpl implements ClientService {
     public void insert(Client client) {
         if (numClients < NUM_CLIENTS_ALLOWED) {
             saveClientWithCep(client);
+            clientCounterService.incrementCounter();
             numClients++;
         } else {
 
-            // TODO: code return FORBIDDEN response status
+            // TODO: code return 403 FORBIDDEN response status
             log.info("{} is not allowed to insert!", client);
         }
     }
@@ -100,5 +105,12 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void delete(Long id) {
         clientRepository.deleteById(id);
+        if (numClients > 0 ) {
+            numClients--;
+            clientCounterService.decrementCounter();
+        } else {
+            // TODO: code return FORBIDDEN response status
+            log.info("there is no client to delete");
+        }
     }
 }
